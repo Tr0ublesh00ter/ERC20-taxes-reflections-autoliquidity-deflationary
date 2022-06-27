@@ -1,4 +1,6 @@
 //SPDX-License-Identifier: MIT
+
+//Built on top of Safeaffinity smart contracts
 pragma solidity 0.8.11;
 
 import "./Distributor.sol";
@@ -260,7 +262,7 @@ contract AutoStakeERC20 is IERC20, Context, Ownable {
         return success;
     }
 
-    /** Takes Associated Fees and sets holders' new Share for the Safemoon Distributor */
+    /** Takes Associated Fees and sets holders' new Share for the Distributor */
     function handleTransferBody(
         address sender,
         address recipient,
@@ -335,8 +337,8 @@ contract AutoStakeERC20 is IERC20, Context, Ownable {
     }
 
     /**
-     *  Swaps SafeAffinity for BNB if threshold is reached and the swap is enabled
-     *  Burns 20% of SafeAffinity in Contract
+     *  Swaps Token for BNB if threshold is reached and the swap is enabled
+     *  Burns 20% of token in Contract
      *  Swaps The Rest For BNB
      */
     function swapBack() private swapping {
@@ -451,13 +453,13 @@ contract AutoStakeERC20 is IERC20, Context, Ownable {
         tokenLiquidityStored -= tokens;
     }
 
-    /** Claim Your Vault Rewards Early */
+    /** Claim Your Rewards Early */
     function claimReflection() external returns (bool) {
         distributor.claimReflections(msg.sender);
         return true;
     }
 
-    /** Manually Depsoits To The Earn or Vault Contract */
+    /** Manually Depsoits To contract */
     function manuallyDeposit() external returns (bool) {
         distributor.deposit();
         return true;
@@ -551,7 +553,7 @@ contract AutoStakeERC20 is IERC20, Context, Ownable {
         minimumToDistribute = _minimumBNBToDistribute;
     }
 
-    /** Set Criteria For SafeAffinity Distributor */
+    /** Set Criteria For Distributor */
     function setDistributionCriteria(
         uint256 _minPeriod,
         uint256 _minDistribution,
@@ -587,7 +589,7 @@ contract AutoStakeERC20 is IERC20, Context, Ownable {
         distributor.updatePancakeRouterAddress(nRouter);
     }
 
-    /** Set Address For SafeAffinity Distributor */
+    /** Set Address For Distributor */
     function setDistributor(address payable newDistributor) external onlyOwner {
         require(
             newDistributor != address(distributor),
@@ -597,7 +599,7 @@ contract AutoStakeERC20 is IERC20, Context, Ownable {
         emit SwappedDistributor(newDistributor);
     }
 
-    /** Swaps SafeAffinity and SafeVault Addresses in case of migration */
+    /** Change addresses in case of migration */
     function setTokenAddress(address newReflectionToken) external onlyOwner {
         distributor.setReflectionToken(newReflectionToken);
         emit SwappedTokenAddresses(newReflectionToken);
